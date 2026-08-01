@@ -110,4 +110,19 @@ class ExportResult:
     """Format of the exported results"""
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Metadata dictionary containing additional information about the export process"""
-    
+
+
+@dataclass
+class PipelineResult:
+    """Pipeline runner result"""
+
+    features: FeatureExtractionResult
+    """Feature extraction result"""
+    pairs: PairSelectionResult
+    """Image pair selection result"""
+    matches: FeatureMatchingResult
+    """Feature matching result"""
+    mapping: MappingResult
+    """Mapping result"""
+    export: Optional[ExportResult]
+    """Optional export result"""
