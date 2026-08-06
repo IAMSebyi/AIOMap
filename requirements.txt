@@ -4,3 +4,4 @@ pycolmap
 rich
 tqdm
 tyro
+torch

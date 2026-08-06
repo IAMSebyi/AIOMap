@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from aiomap.core.types import (
-    ImageCollection, 
-    PairSelectionResult
-)
+from aiomap.core.images import ImageCollection
+from aiomap.core.types import PairSelectionResult
 
 
 class ImagePairSelector(ABC):

@@ -1,51 +1,9 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple, TypeAlias
 
 
-IMAGE_FORMATS = [
-    '.jpg',
-    '.jpeg',
-    '.png',
-    '.tif',
-    '.tiff',
-    '.bmp',
-    '.gif',
-    '.heic',
-]
-
-
-class ImageCollection:
-    """Collection of images"""
-
-    root: Path
-    """Images root directory path"""
-    paths: List[Path]
-    """Sorted list of image paths"""
-    names: List[str]
-    """Sorted list of image names"""
-
-    def __init__(self, images_dir: Path):
-        # Check if a proper directory has been parsed
-        if not images_dir.is_dir():
-            raise NotADirectoryError("Images directory is not a valid directory")
-
-        # Search for images in root directory and construct the list of image paths
-        self.root = images_dir
-        self.paths = []
-        self.names = []
-
-        for file in self.root.iterdir():
-            if file.suffix.lower() in IMAGE_FORMATS:
-                self.paths.append(file)
-
-        # Check if any images were found in the directory
-        if not self.paths:
-            raise FileNotFoundError("No images found in the specified directory")
-
-        # Sort the list of image paths and construct the list of image names
-        self.paths.sort()
-        self.names = [file.name for file in self.paths]
+Device: TypeAlias = Literal['auto', 'cpu', 'cuda']
 
 
 @dataclass

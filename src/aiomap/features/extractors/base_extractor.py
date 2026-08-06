@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from aiomap.core.types import ImageCollection, FeatureExtractionResult
+from aiomap.core.images import ImageCollection
+from aiomap.core.types import FeatureExtractionResult
 
 
 class FeatureExtractor(ABC):
