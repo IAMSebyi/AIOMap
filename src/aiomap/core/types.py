@@ -7,20 +7,6 @@ Device: TypeAlias = Literal['auto', 'cpu', 'cuda']
 
 
 @dataclass
-class FeatureExtractionResult:
-    """Feature extraction result"""
-
-    features_path: Optional[Path] = None
-    """Path to file containing the extracted features"""
-    database_path: Optional[Path] = None
-    """Path to COLMAP database file containing the extracted features"""
-    feature_type: Literal['points', 'lines', 'dense'] = 'points'
-    """Type of features extracted"""
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    """Metadata dictionary containing additional information about the feature extraction process"""
-
-
-@dataclass
 class PairSelectionResult:
     """Pair selection result"""
 
