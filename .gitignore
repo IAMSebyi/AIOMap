@@ -62,6 +62,7 @@ logs/
 *.hdf5
 *.npz
 *.npy
+*.zarr/
 
 # COLMAP / SfM outputs
 database.db

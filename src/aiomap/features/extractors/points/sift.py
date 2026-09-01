@@ -8,6 +8,8 @@ from aiomap.core.features import FeatureExtractionResult, rescale_keypoints
 from aiomap.core.images import ImageCollection
 from aiomap.core.types import Device
 from aiomap.features.extractors.base_extractor import FeatureExtractor
+from aiomap.stores.features import ZarrFeatureStore
+
 
 class SIFTFeatureExtractor(FeatureExtractor):
     """SIFT feature extractor"""
@@ -72,6 +74,13 @@ class SIFTFeatureExtractor(FeatureExtractor):
         # Create output directory if it does not exist (pipeline.py already creates the output directory, 
         # but we create it here as well to ensure that the extractor can be run independently)
         output_dir.mkdir(parents=True, exist_ok=True)
+        features_path = output_dir / "sift_features.zarr"
+        store = ZarrFeatureStore(
+            path=features_path,
+            mode="w",
+            feature_type="points",
+            extractor="SIFT",
+        )
 
         # Extract features sequentially using pycolmap
         features = {}
@@ -79,7 +88,7 @@ class SIFTFeatureExtractor(FeatureExtractor):
         for image_name in images:
             image_data = images.get_by_name(image_name)
 
-            keypoints, descriptors = self.sift.extract(image=image_data.array)
+            keypoints, descriptors = self.sift.extract(image=image_data.array)  # type: ignore
 
             # Rescale keypoints to original image size
             keypoints = rescale_keypoints(keypoints, image_data)
@@ -87,6 +96,19 @@ class SIFTFeatureExtractor(FeatureExtractor):
             features[image_name] = (
                 keypoints.astype(np.float32, copy=False),
                 descriptors.astype(np.float32, copy=False),
+            )
+
+            store.write(
+                image_name=image_name,
+                keypoints=keypoints,
+                descriptors=descriptors,
+                metadata={
+                    "width": image_data.original_width,
+                    "height": image_data.original_height,
+                    "source_width": image_data.width,
+                    "source_height": image_data.height,
+                    "keypoint_format": "xy_scale_orientation",
+                },
             )
 
         # Save features to output directory
@@ -101,6 +123,7 @@ class SIFTFeatureExtractor(FeatureExtractor):
                     np.mean([len(kp) for kp, _ in features.values()]) 
                     if features else 0,
                 'total_keypoints': sum(len(kp) for kp, _ in features.values()),
-                'output_dir': str(output_dir)
+                'output_dir': str(output_dir),
+                "artifact_path": str(features_path),
             }
         )

@@ -15,7 +15,29 @@ The first milestone is to implement a minimal pycolmap-based SfM pipeline using:
 - SIFT feature matching
 - COLMAP-style sparse mapping
 
-At this stage, the repository only contains the minimal project foundation. The core package structure and pipeline implementation will be added incrementally.
+## Installation
+
+For local development, install AIOMap in editable mode.
+
+If you want the default PyTorch package available from your configured pip index, run:
+
+```bash
+pip install -e .
+```
+
+For a CUDA 12.8 PyTorch build, install PyTorch from the official PyTorch CUDA wheel index first:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu128
+```
+
+Then install AIOMap in editable mode:
+
+```bash
+pip install -e .
+```
+
+AIOMap currently depends on pycolmap-cuda12, torch, numpy, opencv-python, zarr, rich, tqdm, and tyro.
 
 ## Vision
 

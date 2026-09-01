@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from aiomap.core.features import FeatureExtractionResult
 from aiomap.core.images import ImageCollection
 from aiomap.core.types import (
-    FeatureExtractionResult, 
     PairSelectionResult,
     FeatureMatchingResult
 )

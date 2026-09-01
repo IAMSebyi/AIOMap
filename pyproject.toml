@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiomap"
+version = "0.1.0-alpha"
+description = "A modular framework for SfM and 3D mapping pipelines."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Sebastian George Iorga" }
+]
+dependencies = [
+    "numpy",
+    "opencv-python",
+    "pycolmap-cuda12",
+    "torch",
+    "rich",
+    "tqdm",
+    "tyro",
+    "zarr",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

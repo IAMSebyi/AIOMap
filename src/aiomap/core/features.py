@@ -18,12 +18,23 @@ class FeatureExtractionResult:
     """Metadata dictionary containing additional information about the feature extraction process"""
 
 
-def rescale_keypoints(keypoints: npt.NDArray[np.float32], image_data: ImageData) -> npt.NDArray[np.float32]:
-    """Rescale keypoints to original image size"""
-    if image_data.array.shape != (image_data.original_height, image_data.original_width):
-        scale_x = image_data.original_width / image_data.width
-        scale_y = image_data.original_height / image_data.height
-        keypoints[:, 0] *= scale_x
-        keypoints[:, 1] *= scale_y
+def rescale_keypoints(
+    keypoints: npt.NDArray[np.float32],
+    image_data: ImageData,
+) -> npt.NDArray[np.float32]:
+    """Rescale keypoints from loaded image coordinates to original image coordinates."""
+    keypoints = keypoints.astype(np.float32, copy=True)
+
+    if (image_data.width, image_data.height) == (
+        image_data.original_width,
+        image_data.original_height,
+    ):
+        return keypoints
+
+    scale_x = image_data.original_width / image_data.width
+    scale_y = image_data.original_height / image_data.height
+
+    keypoints[:, 0] *= scale_x
+    keypoints[:, 1] *= scale_y
 
     return keypoints
