@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Optional
 
-from aiomap.core.types import ImageCollection, PipelineResult
+from aiomap.core.images import ImageCollection
+from aiomap.core.types import PipelineResult
 from aiomap.exporters.base_exporter import Exporter
 from aiomap.features.extractors.base_extractor import FeatureExtractor
 from aiomap.features.matchers.base_matcher import FeatureMatcher
