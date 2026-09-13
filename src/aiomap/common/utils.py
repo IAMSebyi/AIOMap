@@ -2,9 +2,7 @@ from aiomap.core.types import Device
 
 
 def resolve_device(device: Device) -> Device:
-    if device == 'cpu':
-        return device
-    else:
+    if device != 'cpu':
         from torch.cuda import is_available
 
         has_gpu = is_available()
@@ -14,3 +12,5 @@ def resolve_device(device: Device) -> Device:
             raise RuntimeError(
                 "Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and CUDA toolkit installed."
             )
+
+    return device

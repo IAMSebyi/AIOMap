@@ -1,9 +1,10 @@
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+import re
 from os import cpu_count
-from typing import Iterator, Literal, Optional, Tuple, TypeAlias
+from typing import Any, Dict, Iterator, List, Literal, Optional, Tuple, TypeAlias
 
 import cv2
 import numpy as np
@@ -24,6 +25,7 @@ IMAGE_FORMATS = {
 ColorMode: TypeAlias = Literal['rgb', 'grayscale']
 ImageDType: TypeAlias = Literal['uint8', 'float32']
 ImageInterpolation: TypeAlias = Literal['area', 'linear', 'cubic']
+SortMode: TypeAlias = Literal['lexicographic', 'natural']
 
 CacheType: TypeAlias = Literal['none', 'preload', 'lazy_lru']
 
@@ -88,6 +90,12 @@ def _cv2_interpolation(interpolation: ImageInterpolation) -> int:
     if interpolation == "cubic":
         return cv2.INTER_CUBIC
     raise ValueError(f"Unsupported interpolation mode: {interpolation}")
+
+
+def _natural_sort_key(path: Path) -> list[object]:
+    """Sort paths naturally so 2.jpg comes before 10.jpg."""
+    parts = re.split(r"(\d+)", path.name)
+    return [int(part) if part.isdigit() else part.lower() for part in parts]
 
 
 def load_image(path: Path, options: ImageLoadOptions) -> ImageData:
@@ -158,6 +166,7 @@ class ImageCollection:
         cache_type: CacheType = "none",
         max_cached_images: int = -1,
         num_workers: Optional[int] = None,
+        sort_mode: SortMode = "natural",
     ):
         # Check if a proper directory has been parsed
         self.root = Path(root).resolve()
@@ -166,8 +175,11 @@ class ImageCollection:
 
         # Search for images in root directory and construct the list of sorted image paths
         self.paths = sorted(
-            file for file in self.root.iterdir()
-            if file.is_file() and file.suffix.lower() in IMAGE_FORMATS
+            (
+                file for file in self.root.iterdir()
+                if file.is_file() and file.suffix.lower() in IMAGE_FORMATS
+            ),
+            key = _natural_sort_key if sort_mode == "natural" else None
         )
         self.names = [file.name for file in self.paths]
         self.name_to_path = dict(zip(self.names, self.paths))
@@ -272,4 +284,3 @@ class ImageCollection:
     def is_cached(self, name: str) -> bool:
         """Check if an image is currently cached in memory."""
         return name in self.cache
-    

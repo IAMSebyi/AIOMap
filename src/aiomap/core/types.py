@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple, TypeAlias
 
+from aiomap.core.features import FeatureExtractionResult
+
 
 Device: TypeAlias = Literal['auto', 'cpu', 'cuda']
 
@@ -12,8 +14,6 @@ class PairSelectionResult:
 
     pairs: List[Tuple[str, str]] = field(default_factory=list)
     """List of selected image pairs"""
-    pairs_path: Optional[Path] = None
-    """Path to file containing the selected image pairs"""
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Metadata dictionary containing additional information about the pair selection process"""
 
